@@ -10,10 +10,37 @@ export const resolvers = {
         } 
     },
 
+    Mutation:{
+        createJob: (_root,{input},{user}) => {
+            console.log("Context",user);
+            if(!user){
+                throw new Error(" !")
+            }
+            
+           return Job.create({...input, companyId : user.companyId})
+        
+        },
+        deleteJob: (_root,{id},{user}) => {
+            if(!user){
+                throw new Error(" !")
+            }
+            
+            return Job.delete(id)
+        
+        },
+        updateJob: (_root,{input})  => Job.update(input)
+    },
+
     Job:{
         company: (job) => {
             return Company.findById(job.companyId)
         }
     },
+
+    Company:{
+        jobs : (company) => {
+            return Job.findAll( (job) => job.companyId === company.id )
+        }
+    }
 
 }
